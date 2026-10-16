@@ -1,22 +1,16 @@
-import express from 'express';
-import { ethers } from 'ethers';
-import { getUsdcInfo } from '../contract/usdc.js';
+import express from 'express'; // use express
+import { getUsdcInfo } from '../contract/usdc.js'; // Get usdc object
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const app = express(); // Get express object
+const PORT = 3000; // Port = 3000
 
 app.use(express.json());
+// Express receives the request body as JSON text. express.json() parses it so your backend can access the data as a JavaScript object.
 
-// GET /JimmyApiTest?address=0x... — reads USDC contract data from Ethereum mainnet
+// GET /JimmyApiTest — reads USDC contract data from Ethereum mainnet
 app.get('/JimmyApiTest', async (req, res) => {
-  const { address } = req.query;
-
-  if (address && !ethers.isAddress(address)) {
-    return res.status(400).json({ success: false, error: 'Invalid Ethereum address' });
-  }
-
   try {
-    const data = await getUsdcInfo(address);
+    const data = await getUsdcInfo();
     res.json({ success: true, timestamp: new Date().toISOString(), data });
   } catch (err) {
     res.status(502).json({ success: false, error: `Failed to read contract: ${err.shortMessage || err.message}` });
@@ -25,6 +19,6 @@ app.get('/JimmyApiTest', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
-});
+}); // start your Express.js server and wait for incoming requests on a specific port
 
 export default app;

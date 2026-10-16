@@ -1,24 +1,19 @@
-// Calls the /JimmyApiTest endpoint and prints the smart contract data to the console.
-// Usage: node src/client/fetchContractData.js [address]
-
-const API_URL = process.env.API_URL || 'http://localhost:3000';
-const address = process.argv[2] || '0x28C6c06298d514Db089934071355E5743bf21d60';
-
-const url = `${API_URL}/JimmyApiTest?address=${address}`;
-console.log(`Fetching contract data from ${url}\n`);
+const API_URL = 'http://localhost:3000'; // Base url
+const url = `${API_URL}/JimmyApiTest`; // uri = JimmyApiTest
+console.log(`Fetching contract data from ${url}\n`); // Console.log
 
 try {
-  const res = await fetch(url);
-  const body = await res.json();
+  const res = await fetch(url); // send a request to a URL and wait for the response before continuing
+  const body = await res.json(); // Get the content
 
-  if (!body.success) {
-    console.error('Request failed:', body.error);
-    process.exit(1);
+  if (!body.success) { // If failed
+    console.error('Request failed:', body.error); // Throw error
+    process.exit(1); // Exit
   }
 
-  const { data } = body;
-  console.log('Contract data fetched successfully:');
-  console.table({
+  const { data } = body; // If succeed
+  console.log('Contract data fetched successfully:'); // Log succeed
+  console.table({ // Write network, contract, block, name, symbols, decimal, total supply
     Network: data.network,
     Contract: data.contract,
     Block: data.blockNumber,
@@ -26,11 +21,8 @@ try {
     Symbol: data.symbol,
     Decimals: data.decimals,
     'Total Supply': data.totalSupply,
-    'Balance Of': data.balance.address,
-    Balance: `${data.balance.amount} ${data.symbol}`,
   });
 } catch (err) {
-  console.error(`Could not reach the API at ${API_URL}. Is the server running (npm start)?`);
-  console.error(err.message);
-  process.exit(1);
+  console.error(err.message); // Throw error
+  process.exit(1); // Exit
 }
